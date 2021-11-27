@@ -1,0 +1,105 @@
+/*
+Exercicio 1
+Da tabela order_details, faça a contagem de quantos pedidos tiveram descontos ou não
+*/
+
+/* Resolução */
+SELECT
+	CASE WHEN discount <> 0 THEN '1 - teve desconto' ELSE '2 - não teve desconto' END AS tem_desconto,
+	COUNT(*) AS contagem
+FROM order_details
+GROUP BY 1
+ORDER BY 1;
+
+
+/*
+Exercicio 2
+Da tabela orders, classifique os valores de frete em 3 categorias:
+1- Low Cost : valores de Frete menor que 50;
+2 - Medium Cost : valores de Frete entre 50 e 100;
+3 - High Cost: valores de Frete maior que 100;
+*/
+
+/*Resolução*/
+SELECT
+	freight,
+	CASE WHEN freight < 50 THEN '1 - Low Cost'
+		 WHEN freight < 100 THEN '2 - Medium Cost' ELSE '3 - High Cost' END AS cat_frete
+FROM orders;
+
+/*
+Exercicio 3
+Utilizando a tabela da consulta do Exercício 2, calcule a quantidade de fretes,
+total dos fretes e o ticket médio para cada categoria de frete
+
+Obs.: Arredonde o valor para duas casas decimais
+*/
+
+/*Resolução*/
+CREATE OR REPLACE TEMP VIEW tabela_frete AS
+SELECT
+	freight,
+	CASE WHEN freight < 50 THEN '1 - Low Cost'
+		 WHEN freight < 100 THEN '2 - Medium Cost' ELSE '3 - High Cost' END AS cat_frete
+FROM orders;
+
+SELECT
+	cat_frete,
+	COUNT(*)                                          AS qtde_fretes,
+	ROUND(CAST(SUM(freight) AS NUMERIC), 2)           AS total_fretes,
+	ROUND(CAST(SUM(freight) AS NUMERIC)/COUNT(*), 2)  AS ticket_medio
+FROM tabela_frete
+GROUP BY 1
+ORDER BY 1;
+
+
+/*
+Exercicio 4
+Utilizando a tabela employees, siga os passos abaixo:
+
+- Crie uma variável de tempo de contrato em meses e uma em anos, para os funcionários com
+data de referência em 06/1993;
+
+- Para os funcionários contratados após 06/1993, zere todos os valores de tempo de contrato
+em meses e ano;
+*/
+SELECT * FROM employees;
+
+CREATE OR REPLACE TEMP VIEW time_employee AS
+SELECT
+	employee_id,
+	hire_date,
+	DATE_PART('month', hire_date) AS mes_contrato,
+	DATE_PART('year', hire_date)  AS ano_contrato,
+	(1993*12 + 6) - (DATE_PART('year', hire_date)*12 + DATE_PART('month', hire_date)) AS cont_meses,
+	ROUND(((1993*12 + 6) - (DATE_PART('year', hire_date)*12 + DATE_PART('month', hire_date)))/12) AS cont_anos
+FROM employees;
+
+SELECT
+	employee_id,
+	hire_date,
+	cont_meses,
+	CASE WHEN cont_meses <= 0 THEN 0 ELSE cont_meses END AS cont_93,
+	cont_anos,
+	CASE WHEN cont_anos <= 0 THEN 0 ELSE cont_anos END AS cont_ano_93
+FROM time_employee;
+
+
+
+
+/*
+Exercício 5
+
+Utilizando a tabela order_details, traga o nome do produto e calcule o valor total do produto:
+unit_price * quantity * (1 - discount)
+
+Após isso calcule o total por pedido usando o OVER e PARTITION BY, ordenando pelo order_id
+*/
+
+/*
+Resolução
+*/
+
+
+
+

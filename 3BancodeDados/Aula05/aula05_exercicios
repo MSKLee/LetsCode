@@ -1,0 +1,118 @@
+/*
+EXERCICIOS - MANIPULANDO TEXTOS
+*/
+
+SELECT * FROM orders;
+SELECT * FROM products;
+SELECT * FROM customers;
+
+/*
+Exercicio 1
+
+Da tabela products da northwind, selecione todos os produtos que começem com a letra S
+*/
+
+/*
+Resolução
+*/
+
+SELECT products.product_name FROM products
+WHERE products.product_name LIKE 'S%';
+
+
+/*
+Exercicio 2
+
+Da tabela products da northwind, selecione todos os produtos que seja armazenado em garrafas ('bottles') ou vidros ('glasses')
+*/
+
+
+/*
+Resolução
+*/
+
+SELECT products.product_name FROM products
+WHERE products.quantity_per_unit LIKE '%bottle%'
+OR products.quantity_per_unit LIKE '%glass%';
+
+/*
+Exercicio 3
+
+Da tabela costumers da northwind, selecione todos os registros que o nome do contato que o nome 
+começem com a letra M e estejam na Alemanha ('Germany', Brasil ('Brazil') ou Canadá ('Canada'))
+*/
+
+/*
+Resolução
+*/
+
+SELECT customers.contact_name, customers.country FROM customers
+WHERE customers.contact_name LIKE 'M%'
+AND customers.country LIKE 'Germany'
+OR customers.contact_name LIKE 'M%'
+AND customers.country LIKE 'Brazil'
+OR customers.contact_name LIKE 'M%'
+AND customers.country LIKE 'Canada'
+ORDER BY customers.country;
+
+SELECT customers.contact_name, customers.country FROM customers
+WHERE customers.contact_name LIKE 'M%' AND customers.country IN ('Germany', 'Brazil', 'Canada')
+
+ORDER BY customers.country;
+
+
+/*
+Exercicio 4
+
+Da tabela costumers da northwind, selecione todos os companhias que os nome das cidades começem com A, L, R e S
+*/
+
+/*
+Resolução
+*/
+
+SELECT * FROM customers;
+
+SELECT customers.company_name, customers.city FROM customers
+WHERE customers.city LIKE 'A%'
+	OR customers.city LIKE 'L%'
+	OR customers.city LIKE 'R%'
+	OR customers.city LIKE 'S%'
+ORDER BY customers.city;
+
+
+/*
+Exercicio 5
+
+Selecione da tabela orders todos os pedidos com ship_country igual a Brasil, onde as datas de pedidos seja entre 1997-01-01 a 1997-03-01
+*/
+
+/*
+Resolução
+*/
+
+SELECT * FROM orders
+WHERE orders.ship_country LIKE 'Brazil'
+AND orders.order_date >= '1997-01-01' 
+AND orders.order_date <= '1997-03-01'
+ORDER BY orders.order_date;
+
+
+/*
+Exercicio 6
+
+Selecione da tabela orders todos os pedidos feitos no ano de 1998
+*/
+
+/*
+Resolução
+*/
+
+SELECT * FROM orders
+WHERE orders.order_date >= '1998-01-01' 
+AND orders.order_date <= '1998-12-31'
+ORDER BY orders.order_date;
+
+SELECT * FROM orders
+WHERE DATE_PART('year', orders.order_date) = '1998'
+ORDER BY orders.order_date;
